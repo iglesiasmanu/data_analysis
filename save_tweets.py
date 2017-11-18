@@ -1,22 +1,19 @@
 import json
 from os import path
 
-from tweepy import OAuthHandler, Stream, API
+from tweepy import OAuthHandler, Stream
 from tweepy.streaming import StreamListener
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from data_analysis.database import session, Tweet, Hashtag, User
-
+from data_analysis.database.py import session, Tweet, Hashtag, User
 
 consumer_key = "0qFf4T2xPWVIycLmAwk3rDQ55"
 consumer_secret = "LcHpujASn4fIIrQ8sikbCTQ3oyU6T6opchFVWBBqwICahzSE64"
 access_token = "4271002872-XLo7TNnE3qvYevqLmT1RBuiJ5CJ3o0DCr3WReAT"
 acces_token_secret = "ulZ3dA25zuC6BGJgaFowCSTIm6gKVtOa4x9y7tO0IUDIx"
 
-auth = OAuthHandler(consumer_key,
-                    consumer_secret)
-
+auth = OAuthHandler(consumer_key, consumer_secret)
 auth.set_access_token(access_token, acces_token_secret)
 
 def save_tweets():
@@ -31,6 +28,7 @@ def save_tweets():
         stream.sample(languages = languages)
     except KeyboardInterrupt:
         listener.file.close()
+
 
 class DatabaseListener(StreamListener):
     def __init__(self, number_tweets_to_save, filepath = None):
