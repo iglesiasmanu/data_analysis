@@ -6,7 +6,7 @@ from tweepy.streaming import StreamListener
 
 from sqlalchemy.orm.exc import NoResultFound
 
-from data_analysis.database.py import session, Tweet, Hashtag, User
+from database import session, Tweet, Hashtag, User
 
 consumer_key = "0qFf4T2xPWVIycLmAwk3rDQ55"
 consumer_secret = "LcHpujASn4fIIrQ8sikbCTQ3oyU6T6opchFVWBBqwICahzSE64"
@@ -65,10 +65,10 @@ def create_user_helper(user_data):
                 name = u["name"],
                 screen_name = u["screen_name"],
                 created_at = u["created_at"],
-                description = u.get(description),
+                description = u.get("description"),
                 followers_count = u["followers_count"],
                 statuses_count = u["statuses_count"],
-                favorites_count = u["favorites_count"],
+                favourites_count = u["favourites_count"],
                 listed_count = u["listed_count"],
                 geo_enabled = u["geo_enabled"],
                 lang = u.get("lang"))
@@ -78,7 +78,7 @@ def create_user_helper(user_data):
 def create_tweet_helper(tweet_data, user):
     #alias for shorten calls
     t = tweet_data
-    retweet = True if t["text"][:3] == "RT" else False
+    retweet = True if t["text"][:3] == "RT " else False
     coordinates = json.dumps(t["coordinates"])
     tweet = Tweet(tid=t["id_str"],
                   tweet=t["text"],
@@ -124,14 +124,4 @@ def save_to_database(data):
 
         session.add(tweet)
         session.commit()
-
-def _get_dir_absolute_path():
-    """
-    helper method to get the absolute path of the file directory
-    """
-    directory = path.abspath(path.dirname(__file__))
-    return directory
-if __name__ == "__main__":
-    save_tweets()
-
 
