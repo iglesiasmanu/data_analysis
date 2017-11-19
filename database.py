@@ -40,7 +40,7 @@ class Tweet(Base):
     id = Column(Integer, primary_key = True)
     tid = Column(String(100), nullable = False)
     tweet = Column(String(300), nullable = False)
-    user_id = Column(Integer, ForeignKey("user.id"), nullable = False)
+    user_id = Column(Integer, ForeignKey("user.id"))
     coordinates = Column(String(50), nullable = True)
     user = relationship("User", backref = "tweets")
     create_at = Column(String(100), nullable = False)
@@ -54,13 +54,14 @@ class Tweet(Base):
     source = Column(String)
     is_retweet = Column(Boolean)
     hashtags = relationship("Hashtag",
-                            secondary = "hashtag_tweet")
+                            secondary = "hashtag_tweet",
+                            back_populates = "tweets")
     
     def User(Base):
         return "<Tweet {}".format(self.id)
 
 class User(Base):
-    __tablename__ = "users"
+    __tablename__ = "user"
     id = Column(Integer, primary_key = True)
     uid = Column(String(50), nullable = False)
     name = Column(String(100), nullable = False)
@@ -80,11 +81,11 @@ class User(Base):
         return "<User {}>".format(self.id)
 
 class Hashtag(Base):
-    __tablename__ = "Hashtag"
+    __tablename__ = "hashtags"
     id = Column(Integer, primary_key = True)
     text = Column(String(200), nullable = False)
-    tweets = relationship("tweet",
-                          secondary = "hashtag_tweet",
+    tweet1 = relationship("Tweet",
+                          secondaryjoin = "hashtag_tweet",
                           back_populates = "hashtags")
 
     def __rep__(self):
